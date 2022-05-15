@@ -47,7 +47,9 @@ void unmapper();
 void emergency_closer();
 
 truth_t logic();
-void select_mode();
+void game_set();
+void game_start();
+void in_game();
 void input_mode();
 
 

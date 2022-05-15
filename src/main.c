@@ -56,8 +56,11 @@ int main(int argc, char* argv[]) {
 	init_clcd(clcd_cmd, clcd_data);
 	init_keypad(keypad_out, keypad_in);
 	
-	sel.all = 0;
-	while( logic() == TRUE ) {	}
+	game_set();
+
+	//sel.all = 0;
+	// int open = 0;
+	// while( logic() == TRUE ) {	}
 	
 	unmapper();
 	close(fd);
@@ -87,15 +90,17 @@ void emergency_closer() {
 	exit(EXIT_FAILURE);
 }
 
+/*
 truth_t logic() {
-	if( sel.all == 0 ) { select_mode(); }
-	else if( sel.exit == 1 ) { return FALSE; }
+	if( open == 1 ) { game_set(); }
+	else if( open == 0 ) { return FALSE; }
 	else { input_mode(); }
 	return TRUE;
 }
+*/
 
-void select_mode() {
-	int i;  char buf[100];
+void game_set() {
+	int i;  char buf[10];
 	char clcd_str[20] = "";
 	
 	led_clear();
@@ -103,33 +108,75 @@ void select_mode() {
 	fnd_clear();
 	clcd_clear_display();
 	
+	//게임 시작 터미널 화면
 	printf("\n");
-	printf("*********** Select device **********\n");
-	printf("*   l (LED)       d (Dot Matrix)   *\n");
-	printf("*   f (FND)       c (CLCD)         *\n");
-	printf("*   a (All devices)                *\n");
-	printf("*       press 'e' to exit program  *\n");
+	printf("************************************\n");
+	printf("*     Welcome to  8digits game	   *\n");
+	printf("*								   *\n");
+	printf("*	 press (s) to start level 1	   *\n");
+	printf("*		press (e) to exit		   *\n");
+	printf("*       						   *\n");
 	printf("************************************\n\n");
 	scanf("%s", buf);
 	
-	for( i=0; i<strlen(buf); i++ ) {
-		if( buf[i] == 'l' ) { sel.led = 1; }
-		else if( buf[i] == 'd' ) { sel.dot  = 1; }
-		else if( buf[i] == 'f' ) { sel.fnd  = 1; }
-		else if( buf[i] == 'c' ) { sel.clcd = 1; }
-		else if( buf[i] == 'e' ) { sel.exit = 1;  break; }
-		else if( buf[i] == 'a' ) { 
-			sel.all = 0xFF;  sel.exit = 0;  break;
-		}
+	for (i = 0; i < strlen(buf); i++) {
+		if (buf[i] == 's') { game_start(); }
+		else if (buf[i] == 'e') { break; }
 	}
-	
+
+	/*
 	if( sel.led  == 1 ) { strcat(clcd_str, "LED "); }
 	if( sel.dot  == 1 ) { strcat(clcd_str, "Dot "); }
 	if( sel.fnd  == 1 ) { strcat(clcd_str, "FND "); }
 	if( sel.clcd == 1 ) { strcat(clcd_str, "CLCD"); }
 	clcd_write_string(clcd_str);
+	*/
 	
 }
+
+void game _start() {
+
+	//게임 시작 디바이스 출력
+	led_blink_all();
+	for (i = 1; i < 6; i++) {
+		dot_write(8);
+		usleep(100000);
+		dot_clear();
+		usleep(100000);
+	}
+	for (i = 1; i < 6; i++) {
+		fnd_all();
+		usleep(100000);
+		fnd_clear();
+		usleep(100000);
+	}
+	//clcd 출력 더 디테일하게 수정 필요
+	clcd_set_DDRAM(0x00);
+	clcd_write_string("game starting");
+	usleep(2000000);
+	clcd_set_DDRAM(0x00);
+	clcd_write_string("level 1 start");
+	clcd_clear_display();
+
+	void in_game(1);
+
+	//sel.all = 0xFF;  sel.exit = 0;  break;
+}
+
+
+void in_game(int level) {
+	int display_time;
+	int random8Digits[8];
+
+	srand(time(NULL));
+	for (int i = 0; i < 8; i++) {
+		random8Digidts[i] = rand() % 16;
+	}
+	//fnd에 어떻게 출력할지 확인
+	//여기 까지!
+	
+}
+
 
 void input_mode() {
 	int key_count, key_value;

@@ -18,6 +18,7 @@ static unsigned short fnd_hexadecimal[16] = {
 	0x5E, // d
 	0x79, // E
 	0x71  // F
+		//알파벳 만들고 싶은거 만들자
 };
 
 static short * fnd[MAX_FND];

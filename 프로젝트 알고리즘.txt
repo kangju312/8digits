@@ -1,0 +1,100 @@
+
+
+main{
+
+메모리 매핑{
+	fd = open("/dev/mem", O_RDWR|O_SYNC);
+	if (fd == -1) {
+		fprintf(stderr, "Cannot open /dev/mem file");
+		exit(EXIT_FAILURE);
+	}
+	
+	led = mapper(IEB_LED, PROT_WRITE);
+	for( i=0; i<MAX_DOT; i++ ) {
+		dot[i] = mapper(IEB_DOT[i], PROT_WRITE);
+	}
+	for( i=0; i<MAX_FND; i++ ) {
+		fnd[i] = mapper(IEB_FND[i], PROT_WRITE);
+	}
+	clcd_cmd  = mapper(IEB_CLCD_CMD, PROT_WRITE);
+	clcd_data = mapper(IEB_CLCD_DATA, PROT_WRITE);
+	keypad_out  = mapper(IEB_KEY_W, PROT_WRITE);
+	keypad_in = mapper(IEB_KEY_R, PROT_READ);
+}
+
+
+
+디바이스 초기화{
+	init_led(led);
+	init_dot(dot);
+	init_fnd(fnd);
+	init_clcd(clcd_cmd, clcd_data);
+	init_keypad(keypad_out, keypad_in);
+}
+
+
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+로직함수(false 전까지 반복){
+	
+	1. game_start() 호출
+		
+		game_set(){
+			1) 터미널에 시작키/ 종료키 입력 받는 화면 출력
+			2) 사용자에게 입력 받음
+			3) 시작 > game_start() 호출 , 종료> 로직함수 빠져나와서 프로그램 종료
+		
+		game_start(){
+			1) 5초동안
+			   clcd에 시작 화면 출력
+			   led 반짝 거리기
+			2) in_game() 호출
+		
+		in_game() {
+			1) level 1
+				clcd, led에 레벨 1 표시
+				RandNumer[] 8개 숫자 랜덤 추출
+				FND에 숫자 RandNumer[] 8개 8초 동안 띄우기
+				KeypadInput() - 사용자에게 keyboard에서 입력받는 함수 호출
+			  level 2 
+				반복
+				난이도 조절을 다양하게? blink?
+			2) final level
+				성공시 모든 디바이스 깜빡이고 game_set으로 복귀
+					
+						
+		KeypadInput(){
+			1) keypad_read() 호출> keypad를 통해 하나씩 key_value[] 숫자 입력받기★					2) key_value 하나씩 입력할 때마다 dot에 출력(다음 숫자 입력할 때까지 유지)
+			3) key_value[] 와 RandNumer[] 비교
+				하나씩 비교하고 같으면 다음 숫자로 넘어감
+				다르면 출력 디바이스에 실패 표시하고 game_set으로 돌아감
+				모두 맞으면 출력 디바이스에 성공 표시 해주고 level2 시작
+			
+	
+	2. 사용자가 키보드(pc)에서 e 누르면 종료
+
+}
+
+
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+
+언매핑, 프로그램 종료{
+		unmapper();
+	close(fd);
+	return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
