@@ -55,3 +55,19 @@ void fnd_hexa_number(unsigned long number) {
 		number = number >> 4;
 	}
 }
+
+unsigned long fnd_digits_display(int * digits) {
+
+	unsigned long digitsConnect2 = 0;
+
+	for (int i = 0; i < 8; i++) {
+
+		int temp = (0x0f & digits[i]);
+		temp = temp << 4 * i;
+		digitsConnect2 |= temp;
+	}
+
+	fnd_hexa_number(digitsConnect2);
+
+	return digitsConnect2;
+}

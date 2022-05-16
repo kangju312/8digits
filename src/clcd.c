@@ -69,3 +69,22 @@ void clcd_write_string(char str[]) {
 		clcd_write_data(str[i]);
 	}
 }
+
+void clcd_level_display(int level_buf) {
+
+	char s1[10];
+	char clcd_str_buf[60] = "";
+
+	sprintf(s1, "%d", level_buf);
+
+	clcd_str_buf[0] = '\0';
+	strcat(clcd_str_buf, "level ");
+	strcat(clcd_str_buf, s1);
+	strcat(clcd_str_buf, " start! ");
+
+	clcd_set_DDRAM(0x00);
+	clcd_write_string(clcd_str_buf);
+	usleep(2000000);
+	clcd_clear_display();	//clcd 두번째 줄에도 정보 추가
+
+}

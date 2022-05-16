@@ -24,5 +24,6 @@ void clcd_function_set(int DL, int N, int F);
 void clcd_set_DDRAM(int address);
 void clcd_write_string(char str[]);
 
+void clcd_level_display(int level_buf);
 
 #endif

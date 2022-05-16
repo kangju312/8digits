@@ -4,6 +4,6 @@
     "\\lib",
     "\\src"
   ],
-  "SelectedNode": "\\src\\led.c",
+  "SelectedNode": "\\lib\\clcd.h",
   "PreviewInSolutionExplorer": false
 }

@@ -56,11 +56,13 @@ int main(int argc, char* argv[]) {
 	init_clcd(clcd_cmd, clcd_data);
 	init_keypad(keypad_out, keypad_in);
 	
+	//여기까지 매핑&초기화
+
 	game_set();
 
 	//sel.all = 0;
 	// int open = 0;
-	// while( logic() == TRUE ) {	}
+	// while( logic() == TRUE ) {	}	> 필요없을듯?
 	
 	unmapper();
 	close(fd);
@@ -92,9 +94,11 @@ void emergency_closer() {
 
 
 void game_set() {
+
 	int i;  char buf[10];
 	char clcd_str[20] = "";
 	
+	//디바이스 초기화
 	led_clear();
 	dot_clear();
 	fnd_clear();
@@ -115,7 +119,7 @@ void game_set() {
 		if (buf[i] == 's') { game_start(); }
 		else if (buf[i] == 'e') { break; }
 	}
-
+	 //s 나 e 면 변수 바꿔 es 로 입력하면 나가짐. > 해결책?
 }
 
 void game_start(){
@@ -131,63 +135,62 @@ void game_start(){
 	깜빡임, clear,글자 위치, 글자 움직임
 
 	clcd_set_DDRAM(0x00);
-	clcd_write_string("game starting...");
+	clcd_write_string("game starting..."); >> ingame으로 이동
 
 
 	usleep(2000000);
 	clcd_set_DDRAM(0x00);
-	clcd_write_string("level 1 start");
+	clcd_write_string("level 1 start"); >> ingame 으로 이동
 	clcd_clear_display();
 
 	*/
 
+
+	// in_game 재귀함수로?
 	void in_game(1);
 
 }
 
 
 void in_game(int level) {
-	int displayTime;
-	int randomDigits[8];
+
+	int displayTime =0;
 	unsigned long tempDigits = 0;
-	unsigned long digitsConnect = 0;
 
-	srand(time(NULL));
 
-	for (int i = 0; i < 8; i++) {
-		randomDigidts[i] = rand() % 16;
-	}
 
 	switch (level) {
 		case 1:
-			
-			led_level(level);
-
 
 			/*
 			****************(#2)****************
 			clcd에 level 1 시작된다고
 			fnd에 출력되는 8자리를 암기하라고 출력
 			*/
+	
 
-			for (int i = 0; i < 8; i++) {
-				temp = (0x0f & random8Digits[i]);
-				temp = temp << 4 * i;
-				digitsConnect |= temp;
-			}
+			led_level(level);
+			clcd_level_display(1);
 
-			fnd_hexa_number(digitsConnect);
-			displayTime = level * 1000000;
-				usleep(displayTime);
+			int *random8Digits = get_digits();
 
+			unsigned long digitsConnect = 0;
+			digitsConnect = fnd_digits_display(random8Digits);
+
+			displayTime = 2000000 / level;
+			usleep(displayTime);
 			fnd_clear();
 
 			/*
 			****************(#3)****************
-			clcd에 keypad입력하라고 출력
+			clcd_input_display(){
+
+				clcd에 keypad입력하라고 출력
+			}
 			*/
 
 			/*
+			****************(#4)****************
 			keypad에 입력 받으면서 dot에 표시해주기
 			*/
 	}
@@ -230,7 +233,18 @@ void blinkAllDevice() {
 		fnd_clear();
 		led_clear();
 		usleep(100000);
-		
+
 	}
 }
 
+int* get_digits() {
+
+	static int randomDigits[8];
+
+	srand(time(NULL));
+
+	for (int i = 0; i < 8; i++) {
+		randomDigits[i] = rand() % 16;
+	}
+	return randomDigits;
+}

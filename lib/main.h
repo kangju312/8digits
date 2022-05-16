@@ -48,11 +48,16 @@ void unmapper();
 void emergency_closer();
 
 truth_t logic();
+
+void input_mode();
+
 void game_set();
 void game_start();
 void in_game();
-void input_mode();
 void blinkAllDevice();
+
+int* get_digits();
+
 
 
 #endif
