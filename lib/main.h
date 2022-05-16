@@ -9,6 +9,7 @@
 #include <sys/mman.h>	// mmap(), munmap()
 #include <stdlib.h> 	// exit()
 #include <string.h>		// strlen()
+#include <time.h>
 
 
 #include "ieb.h"
@@ -51,6 +52,7 @@ void game_set();
 void game_start();
 void in_game();
 void input_mode();
+void blinkAllDevice();
 
 
 #endif

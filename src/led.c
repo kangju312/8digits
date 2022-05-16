@@ -46,6 +46,14 @@ void led_all() {
 	*led = (short)~0xFF;
 }
 
-void led_bit(int number) {
-	*led = (short)~(number << 4);
+//레벨에 맞춰서 led 켜지는 함수
+void led_level(int level) {
+
+	short ledOn = 0xff;
+
+	for (int i = 0; i < level; i++){
+		ledOn = ledOn << 1;
+	}
+	ledOn = (0xff & ledOn);
+	*led = ledOn;
 }

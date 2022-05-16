@@ -90,14 +90,6 @@ void emergency_closer() {
 	exit(EXIT_FAILURE);
 }
 
-/*
-truth_t logic() {
-	if( open == 1 ) { game_set(); }
-	else if( open == 0 ) { return FALSE; }
-	else { input_mode(); }
-	return TRUE;
-}
-*/
 
 void game_set() {
 	int i;  char buf[10];
@@ -124,56 +116,84 @@ void game_set() {
 		else if (buf[i] == 'e') { break; }
 	}
 
-	/*
-	if( sel.led  == 1 ) { strcat(clcd_str, "LED "); }
-	if( sel.dot  == 1 ) { strcat(clcd_str, "Dot "); }
-	if( sel.fnd  == 1 ) { strcat(clcd_str, "FND "); }
-	if( sel.clcd == 1 ) { strcat(clcd_str, "CLCD"); }
-	clcd_write_string(clcd_str);
-	*/
-	
 }
 
-void game _start() {
+void game_start(){
 
 	//게임 시작 디바이스 출력
-	led_blink_all();
-	for (i = 1; i < 6; i++) {
-		dot_write(8);
-		usleep(100000);
-		dot_clear();
-		usleep(100000);
-	}
-	for (i = 1; i < 6; i++) {
-		fnd_all();
-		usleep(100000);
-		fnd_clear();
-		usleep(100000);
-	}
-	//clcd 출력 더 디테일하게 수정 필요
+
+	blinkAllDevice();
+
+	/*
+	****************(#1)****************
+	clcd 출력 더 디테일하게 수정 필요
+	메세지(외우는 게임이라고),
+	깜빡임, clear,글자 위치, 글자 움직임
+
 	clcd_set_DDRAM(0x00);
-	clcd_write_string("game starting");
+	clcd_write_string("game starting...");
+
+
 	usleep(2000000);
 	clcd_set_DDRAM(0x00);
 	clcd_write_string("level 1 start");
 	clcd_clear_display();
 
+	*/
+
 	void in_game(1);
 
-	//sel.all = 0xFF;  sel.exit = 0;  break;
 }
 
 
 void in_game(int level) {
-	int display_time;
-	int random8Digits[8];
+	int displayTime;
+	int randomDigits[8];
+	unsigned long tempDigits = 0;
+	unsigned long digitsConnect = 0;
 
 	srand(time(NULL));
+
 	for (int i = 0; i < 8; i++) {
-		random8Digidts[i] = rand() % 16;
+		randomDigidts[i] = rand() % 16;
 	}
-	//fnd에 어떻게 출력할지 확인
-	//여기 까지!
+
+	switch (level) {
+		case 1:
+			
+			led_level(level);
+
+
+			/*
+			****************(#2)****************
+			clcd에 level 1 시작된다고
+			fnd에 출력되는 8자리를 암기하라고 출력
+			*/
+
+			for (int i = 0; i < 8; i++) {
+				temp = (0x0f & random8Digits[i]);
+				temp = temp << 4 * i;
+				digitsConnect |= temp;
+			}
+
+			fnd_hexa_number(digitsConnect);
+			displayTime = level * 1000000;
+				usleep(displayTime);
+
+			fnd_clear();
+
+			/*
+			****************(#3)****************
+			clcd에 keypad입력하라고 출력
+			*/
+
+			/*
+			keypad에 입력 받으면서 dot에 표시해주기
+			*/
+	}
+
+	//fnd에 레벨 별로 어떻게 출력할지?
+	// //key value를 어떻게 여러개 저장하지.?
 	
 }
 
@@ -195,6 +215,22 @@ void input_mode() {
 	}
 	else if( key_count > 1 ) {
 		sel.all = 0;
+	}
+}
+
+void blinkAllDevice() {
+
+	led_blink_all();
+	for (i = 1; i < 6; i++) {
+		dot_write(8);
+		fnd_all();
+		led_all();
+		usleep(100000);
+		dot_clear();
+		fnd_clear();
+		led_clear();
+		usleep(100000);
+		
 	}
 }
 
