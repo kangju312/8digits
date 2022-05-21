@@ -124,24 +124,23 @@ void game_set() {
 
 void game_start(){
 
-	//게임 시작 디바이스 출력
-
 	blinkAllDevice();
 
 	/*
 	****************(#1)****************
+	* clcd_start_msg()
+	* 
 	clcd 출력 더 디테일하게 수정 필요
 	메세지(외우는 게임이라고),
-	깜빡임, clear,글자 위치, 글자 움직임
+	깜빡임, clear,글자 위치, 글자 움직임 효과 추가
+
+	게임이 처음 시작되는 걸 알려주는 clcd
+		윗 줄에는 game starting...
+		아랫 줄은 특수문자(이모티콘이나 * 같은거)
+			(clcd_write_data에 ascii코드 숫자 바로 넣으면 특수문자 출력가능합니다.)
 
 	clcd_set_DDRAM(0x00);
-	clcd_write_string("game starting..."); >> ingame으로 이동
-
-
-	usleep(2000000);
-	clcd_set_DDRAM(0x00);
-	clcd_write_string("level 1 start"); >> ingame 으로 이동
-	clcd_clear_display();
+	clcd_write_string("game starting..."); 
 
 	*/
 
@@ -155,57 +154,98 @@ void game_start(){
 void in_game(int level) {
 
 	int displayTime =0;
-	unsigned long tempDigits = 0;
-
-
+	unsigned long digitsConnect = 0;
+	unsigned long digitsInput = 0;
+	int* random8Digits;
+	int* key_value;
 
 	switch (level) {
-		case 1:
+	case 1:
 
-			/*
-			****************(#2)****************
-			clcd에 level 1 시작된다고
-			fnd에 출력되는 8자리를 암기하라고 출력
-			*/
-	
+		/*
+		****************(#2)****************
+		clcd_level_display(1);
+		clcd에 level 1 시작된다고
+		fnd에 출력되는 8자리를 암기하라고 출력
+		*/
 
-			led_level(level);
-			clcd_level_display(1);
+		led_level(level);
 
-			int *random8Digits = get_digits();
 
-			unsigned long digitsConnect = 0;
-			digitsConnect = fnd_digits_display(random8Digits);
+		random8Digits = get_digits();
 
-			displayTime = 2000000 / level;
-			usleep(displayTime);
-			fnd_clear();
+		digitsConnect = fnd_digits_display(random8Digits);
 
-			/*
-			****************(#3)****************
-			clcd_input_display(){
+		displayTime = 2000000 / level; //level 1에선 2초동안 숫자 켜짐
+		usleep(displayTime);
+		fnd_clear();
 
-				clcd에 keypad입력하라고 출력
-			}
-			*/
 
+		/*
+		****************(#3)****************
+		clcd_InputMsg(){
+
+			clcd에 keypad에 8 자리 입력하라고 출력
+		}
+		*/
+
+		/*
+		****************(#4)****************
+
+		keypad에 입력 받으면서 dot에 표시해주기
+		*/
+
+		digitsInput = keypad_input_digits(&key_value);
+		if (digitsInput == digitsConnect) {
 			/*
 			****************(#4)****************
-			keypad에 입력 받으면서 dot에 표시해주기
+			* clcd_correct();
+			clcd에 맞췄다고 표시
 			*/
-	}
-
-	//fnd에 레벨 별로 어떻게 출력할지?
-	// //key value를 어떻게 여러개 저장하지.?
+			in_game(2);
+		}
+		else {
+			/*
+			****************(#5)****************
+			* clcd_wrong();
+			clcd에 틀렸다고 표시
+			*/
+			break;
+		}
 	
+	case:2
+
+		clcd_level_display(2);
+		led_level(level);
+
+
+		random8Digits = get_digits();
+
+		digitsConnect = fnd_digits_display(random8Digits);
+
+	case:3
+
+	case:4
+
+	case:5
+
+	case:6
+
+	case:7
+
+	case:8
+
+	default break;
+
 }
+	
 
 
 void input_mode() {
 	int key_count, key_value;
-	char clcd_str[20];
-	key_count = keypad_read(&key_value);
-	
+
+	key_count = keypad_input(&key_value);
+	dot_write(key_value)
 	if( key_count == 1 ) {
 		if( sel.led  == 1 ) { led_bit(key_value); }
 		if( sel.dot  == 1 ) { dot_write(key_value); }
@@ -216,6 +256,7 @@ void input_mode() {
 			clcd_write_string(clcd_str);
 		}
 	}
+
 	else if( key_count > 1 ) {
 		sel.all = 0;
 	}
@@ -247,4 +288,42 @@ int* get_digits() {
 		randomDigits[i] = rand() % 16;
 	}
 	return randomDigits;
+}
+
+
+unsigned long keypad_input_digits(int* key_value) {
+
+	int col, row, key_count = 0;
+	unsigned long digitsConnect_temp;
+	short key_temp;
+	
+
+	while ( key_count < 9) {	// while 안에 조건 레벨별 추가가능
+
+		for (col = 0; col < MAX_KEY_COL; col++) {
+			*keypad_out = (short)(0x08 >> col);
+			key_temp = *keypad_in;
+
+			for (row = 0; row < MAX_KEY_ROW; row++) {
+				if (((key_temp >> row) & 1) == 1) {
+					*key_value = (row * 4) + col;
+					key_count++;
+
+					int temp = (0x0f & *key_value);
+					temp = temp << 4 * (key_count-1);
+					digitsConnect_temp |= temp;
+
+					dot_write(*key_value);
+
+					int start = clock();
+					while ((clock() - start) < 100) {
+						dot_clear();
+					}
+				}
+
+			}
+		}	
+	}
+
+	return digitsConnect_temp;
 }

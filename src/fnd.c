@@ -1,6 +1,7 @@
 //-------| src/fnd.c |-------//
 #include "fnd.h"
 
+
 static unsigned short fnd_hexadecimal[16] = {
 	0x3F, // 0
 	0x06, // 1
@@ -58,16 +59,16 @@ void fnd_hexa_number(unsigned long number) {
 
 unsigned long fnd_digits_display(int * digits) {
 
-	unsigned long digitsConnect2 = 0;
+	unsigned long digitsConnect = 0;
 
 	for (int i = 0; i < 8; i++) {
 
 		int temp = (0x0f & digits[i]);
 		temp = temp << 4 * i;
-		digitsConnect2 |= temp;
+		digitsConnect |= temp;
 	}
 
-	fnd_hexa_number(digitsConnect2);
+	fnd_hexa_number(digitsConnect);
 
-	return digitsConnect2;
+	return digitsConnect;
 }

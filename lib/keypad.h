@@ -8,7 +8,6 @@
 
 
 void init_keypad(short * address_out, short * address_in) ;
-int keypad_read(int * key_value);
 
 
 

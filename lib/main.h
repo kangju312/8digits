@@ -57,6 +57,7 @@ void in_game();
 void blinkAllDevice();
 
 int* get_digits();
+int keypad_input_digits();
 
 
 
