@@ -57,18 +57,19 @@ void fnd_hexa_number(unsigned long number) {
 	}
 }
 
-unsigned long fnd_digits_display(int * digits) {
 
-	unsigned long digitsConnect = 0;
-
-	for (int i = 0; i < 8; i++) {
-
-		int temp = (0x0f & digits[i]);
-		temp = temp << 4 * i;
-		digitsConnect |= temp;
-	}
-
-	fnd_hexa_number(digitsConnect);
-
-	return digitsConnect;
-}
+//unsigned long fnd_digits_display(int * digits) {
+//
+//	unsigned long digitsConnect = 0;
+//
+//	for (int i = 0; i < 8; i++) {
+//
+//		int temp = (0x0f & digits[i]);
+//		temp = temp << 4 * i;
+//		digitsConnect |= temp;
+//	}
+//
+//	fnd_hexa_number(digitsConnect);
+//
+//	return digitsConnect;
+//}

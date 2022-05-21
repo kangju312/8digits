@@ -171,12 +171,14 @@ void in_game(int level) {
 
 		led_level(level);
 
-
 		random8Digits = get_digits();
 
-		digitsConnect = fnd_digits_display(random8Digits);
+		digitsConnect = connectDigits(random8Digits);
 
-		displayTime = 2000000 / level; //level 1에선 2초동안 숫자 켜짐
+		fnd_hexa_number(digitsConnect); 
+
+		//5초 동안 보여줌
+		displayTime = 5000000; //level 1에선 3초동안 숫자 켜짐
 		usleep(displayTime);
 		fnd_clear();
 
@@ -187,12 +189,6 @@ void in_game(int level) {
 
 			clcd에 keypad에 8 자리 입력하라고 출력
 		}
-		*/
-
-		/*
-		****************(#4)****************
-
-		keypad에 입력 받으면서 dot에 표시해주기
 		*/
 
 		digitsInput = keypad_input_digits(&key_value);
@@ -218,19 +214,147 @@ void in_game(int level) {
 		clcd_level_display(2);
 		led_level(level);
 
+		random8Digits = get_digits();
+
+		digitsConnect = connectDigits(random8Digits);
+
+		fnd_hexa_number(digitsConnect);
+
+		//2.5초 동안 보여줌
+		displayTime = 2500000;
+		usleep(displayTime);
+		fnd_clear();
+
+		// clcd_InputMsg();
+
+		digitsInput = keypad_input_digits(&key_value);
+
+		if (digitsInput == digitsConnect) {
+
+		// clcd_correct();
+			in_game(3);
+		}
+		else {
+			
+		//	clcd_wrong();
+			break;
+		}
+
+	case:3
+		clcd_level_display(3);
+		led_level(level);
 
 		random8Digits = get_digits();
 
-		digitsConnect = fnd_digits_display(random8Digits);
+		digitsConnect = connectDigits(random8Digits);
 
-	case:3
+		//3초동안 깜빡임
+		for (int i = 0; i < 15; i++) {
+			fnd_hexa_number(digitsConnect);
+			usleep(100000);
+			fnd_clear();
+			usleep(100000);
+		}
 
+
+		// clcd_InputMsg();
+		digitsInput = keypad_input_digits(&key_value);
+
+		if (digitsInput == digitsConnect) {
+
+			// clcd_correct();
+			in_game(4);
+		}
+		else {
+
+			//	clcd_wrong();
+			break;
+		}
 	case:4
+		clcd_level_display(4);
+		led_level(level);
+
+		random8Digits = get_digits();
+
+		digitsConnect = connectDigits(random8Digits);
+		
+		//2초 동안 보여줌
+		displayTime = 2000000;
+		usleep(displayTime);
+		fnd_clear();
+
+		// clcd_InputMsg();
+
+		digitsInput = keypad_input_digits(&key_value);
+
+		if (digitsInput == digitsConnect) {
+
+			// clcd_correct();
+			in_game(3);
+		}
+		else {
+
+			//	clcd_wrong();
+			break;
+		}
 
 	case:5
+		clcd_level_display(5);
+		led_level(level);
 
+		random8Digits = get_digits();
+
+		digitsConnect = connectDigits(random8Digits);
+
+		//1.8초동안 깜빡임
+		for (int i = 0; i < 9; i++) {
+			fnd_hexa_number(digitsConnect);
+			usleep(100000);
+			fnd_clear();
+			usleep(100000);
+		}
+
+
+		// clcd_InputMsg();
+		digitsInput = keypad_input_digits(&key_value);
+
+		if (digitsInput == digitsConnect) {
+
+			// clcd_correct();
+			in_game(6);
+		}
+		else {
+
+			//	clcd_wrong();
+			break;
+		}
 	case:6
+		clcd_level_display(4);
+		led_level(level);
 
+		random8Digits = get_digits();
+
+		digitsConnect = connectDigits(random8Digits);
+
+		//1.3초 동안 보여줌
+		displayTime = 1300000;
+		usleep(displayTime);
+		fnd_clear();
+
+		// clcd_InputMsg();
+
+		digitsInput = keypad_input_digits(&key_value);
+
+		if (digitsInput == digitsConnect) {
+
+			// clcd_correct();
+			in_game(3);
+		}
+		else {
+
+			//	clcd_wrong();
+			break;
+		}
 	case:7
 
 	case:8
@@ -238,29 +362,7 @@ void in_game(int level) {
 	default break;
 
 }
-	
 
-
-void input_mode() {
-	int key_count, key_value;
-
-	key_count = keypad_input(&key_value);
-	dot_write(key_value)
-	if( key_count == 1 ) {
-		if( sel.led  == 1 ) { led_bit(key_value); }
-		if( sel.dot  == 1 ) { dot_write(key_value); }
-		if( sel.fnd  == 1 ) { fnd_write(key_value, 7); }
-		if( sel.clcd == 1 ) { 
-			sprintf(clcd_str, "%#04x            ", key_value);
-			clcd_set_DDRAM(0x40);
-			clcd_write_string(clcd_str);
-		}
-	}
-
-	else if( key_count > 1 ) {
-		sel.all = 0;
-	}
-}
 
 void blinkAllDevice() {
 
@@ -290,12 +392,27 @@ int* get_digits() {
 	return randomDigits;
 }
 
+unsigned long connectDigits(int* digitsArray) {
+	
+	unsigned long digitsConnect = 0;
+
+	for (int i = 0; i < 8; i++) {
+
+		int temp = (0x0f & digits[i]);
+		temp = temp << 4 * i;
+		digitsConnect |= temp;
+	}
+
+	return digitsConnect;
+}
+
+
 
 unsigned long keypad_input_digits(int* key_value) {
 
 	int col, row, key_count = 0;
-	unsigned long digitsConnect_temp;
-	short key_temp;
+	unsigned long digitsConnect_temp =0;
+	short key_temp =0;
 	
 
 	while ( key_count < 9) {	// while 안에 조건 레벨별 추가가능
