@@ -85,6 +85,61 @@ void clcd_level_display(int level_buf) {
 	clcd_set_DDRAM(0x00);
 	clcd_write_string(clcd_str_buf);
 	usleep(2000000);
-	clcd_clear_display();	//clcd 두번째 줄에도 정보 추가
+	clcd_clear_display();
 
+	clcd_set_DDRAM(0x40);
+	clcd_write_string("VVVVVVVVVVVVVVVV");
+	usleep(2000000);
+	clcd_clear_display();
+}
+
+void clcd_start_msg() {
+	for (int i = 0; i < 2; i++) {
+		clcd_set_DDRAM(0x00);
+		clcd_write_string("game starting...");
+		clcd_set_DDRAM(0x40);
+		clcd_write_string("****************");
+		usleep(800000);
+		clcd_clear_display();
+		usleep(800000);
+	}
+}
+
+void clcd_inputMsg() {
+	char guide_message1[] = "Enter the shown";
+	char guide_message2[] = "8digits in order";
+	clcd_set_DDRAM(0x00);
+	clcd_write_string(guide_message1);
+	clcd_set_DDRAM(0x40);
+	clcd_write_string(guide_message2);
+	usleep(2000000);
+}
+
+void clcd_correct() {
+	clcd_set_DDRAM(0x04);
+	clcd_write_string("Correct!")
+		usleep(2000000);
+	clcd_clear_display();
+}
+
+void clcd_wrong() {
+	clcd_set_DDRAM(0x05);
+	clcd_write_string("Wrong!")
+		usleep(2000000);
+	clcd_clear_display();
+}
+
+
+
+void left_time_display(double time_buf) {
+	char s2[10] = "";
+	char clcd_str_buf2[60] = "";
+	clcd_str_buf2[0] = '\0';
+	sprintf(s2, "%.2f", time_buf);
+	strcat(clcd_str_buf2, "Lefttime : ");
+	strcat(clcd_str_buf2, s2);
+	clcd_set_DDRAM(0x40);
+	clcd_write_string(clcd_str_buf2);
+	clcd_set_DDRAM(0x00);
+	clcd_write_string("enter the 8digits");
 }

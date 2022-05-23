@@ -23,7 +23,6 @@ static off_t IEB_FND[MAX_FND] = {
 static int fd;
 static int map_counter = 0;
 static void * map_data[100];
-static seclection_t sel; 
 
 
 int main(int argc, char* argv[]) {
@@ -58,11 +57,7 @@ int main(int argc, char* argv[]) {
 	
 	//여기까지 매핑&초기화
 
-	game_set();
-
-	//sel.all = 0;
-	// int open = 0;
-	// while( logic() == TRUE ) {	}	> 필요없을듯?
+	while (game_set() == true) {}
 	
 	unmapper();
 	close(fd);
@@ -93,7 +88,7 @@ void emergency_closer() {
 }
 
 
-void game_set() {
+truth_t game_set() {
 
 	int i;  char buf[10];
 	char clcd_str[20] = "";
@@ -117,20 +112,19 @@ void game_set() {
 	
 	for (i = 0; i < strlen(buf); i++) {
 		if (buf[i] == 's') { game_start(); }
-		else if (buf[i] == 'e') { break; }
+		else if (buf[i] == 'e') { return FALSE; }
 	}
-	 //s 나 e 면 변수 바꿔 es 로 입력하면 나가짐. > 해결책?
+	return TRUE;
 }
 
 void game_start(){
 
 	blinkAllDevice();
 
+	clcd_start_msg();
 	/*
 	****************(#1)****************
-	* clcd_start_msg()
-	* 
-	clcd 출력 더 디테일하게 수정 필요
+	clcd_start_msg();
 	메세지(외우는 게임이라고),
 	깜빡임, clear,글자 위치, 글자 움직임 효과 추가
 
@@ -138,14 +132,7 @@ void game_start(){
 		윗 줄에는 game starting...
 		아랫 줄은 특수문자(이모티콘이나 * 같은거)
 			(clcd_write_data에 ascii코드 숫자 바로 넣으면 특수문자 출력가능합니다.)
-
-	clcd_set_DDRAM(0x00);
-	clcd_write_string("game starting..."); 
-
 	*/
-
-
-	// in_game 재귀함수로?
 	void in_game(1);
 
 }
@@ -153,7 +140,7 @@ void game_start(){
 
 void in_game(int level) {
 
-	int displayTime =0;
+	int displayTime = 0;
 	unsigned long digitsConnect = 0;
 	unsigned long digitsInput = 0;
 	int* random8Digits;
@@ -162,6 +149,7 @@ void in_game(int level) {
 	switch (level) {
 	case 1:
 
+		clcd_level_display(1);
 		/*
 		****************(#2)****************
 		clcd_level_display(1);
@@ -175,40 +163,35 @@ void in_game(int level) {
 
 		digitsConnect = connectDigits(random8Digits);
 
-		fnd_hexa_number(digitsConnect); 
+		fnd_hexa_number(digitsConnect);
 
 		//5초 동안 보여줌
 		displayTime = 5000000; //level 1에선 3초동안 숫자 켜짐
 		usleep(displayTime);
 		fnd_clear();
 
-
+		clcd_inputMsg();
 		/*
 		****************(#3)****************
 		clcd_InputMsg(){
 
 			clcd에 keypad에 8 자리 입력하라고 출력
+			//
 		}
 		*/
-
 		digitsInput = keypad_input_digits(&key_value);
 		if (digitsInput == digitsConnect) {
-			/*
-			****************(#4)****************
-			* clcd_correct();
-			clcd에 맞췄다고 표시
-			*/
+
+			clcd_correct();
 			in_game(2);
 		}
 		else {
-			/*
-			****************(#5)****************
-			* clcd_wrong();
-			clcd에 틀렸다고 표시
-			*/
+
+			clcd_wrong();
+
 			break;
 		}
-	
+
 	case:2
 
 		clcd_level_display(2);
@@ -225,18 +208,19 @@ void in_game(int level) {
 		usleep(displayTime);
 		fnd_clear();
 
-		// clcd_InputMsg();
+		clcd_inputMsg();
 
 		digitsInput = keypad_input_digits(&key_value);
 
 		if (digitsInput == digitsConnect) {
 
-		// clcd_correct();
+			clcd_correct();
+
 			in_game(3);
 		}
 		else {
-			
-		//	clcd_wrong();
+
+			clcd_wrong();
 			break;
 		}
 
@@ -257,17 +241,17 @@ void in_game(int level) {
 		}
 
 
-		// clcd_InputMsg();
+		clcd_inputMsg();
 		digitsInput = keypad_input_digits(&key_value);
 
 		if (digitsInput == digitsConnect) {
 
-			// clcd_correct();
+			void clcd_correct();
 			in_game(4);
 		}
 		else {
 
-			//	clcd_wrong();
+			clcd_wrong();
 			break;
 		}
 	case:4
@@ -277,24 +261,23 @@ void in_game(int level) {
 		random8Digits = get_digits();
 
 		digitsConnect = connectDigits(random8Digits);
-		
+
 		//2초 동안 보여줌
 		displayTime = 2000000;
 		usleep(displayTime);
 		fnd_clear();
 
-		// clcd_InputMsg();
-
+		clcd_inputMsg();
 		digitsInput = keypad_input_digits(&key_value);
 
 		if (digitsInput == digitsConnect) {
 
-			// clcd_correct();
+			clcd_correct();
 			in_game(3);
 		}
 		else {
 
-			//	clcd_wrong();
+			clcd_wrong();
 			break;
 		}
 
@@ -315,17 +298,17 @@ void in_game(int level) {
 		}
 
 
-		// clcd_InputMsg();
+		clcd_InputMsg();
 		digitsInput = keypad_input_digits(&key_value);
 
 		if (digitsInput == digitsConnect) {
 
-			// clcd_correct();
+			clcd_correct();
 			in_game(6);
 		}
 		else {
 
-			//	clcd_wrong();
+			clcd_wrong();
 			break;
 		}
 	case:6
@@ -341,28 +324,89 @@ void in_game(int level) {
 		usleep(displayTime);
 		fnd_clear();
 
-		// clcd_InputMsg();
+		clcd_InputMsg();
 
 		digitsInput = keypad_input_digits(&key_value);
 
 		if (digitsInput == digitsConnect) {
 
-			// clcd_correct();
-			in_game(3);
+			clcd_correct();
+			in_game(7);
 		}
 		else {
 
-			//	clcd_wrong();
+			clcd_wrong();
 			break;
 		}
 	case:7
+		clcd_level_display(7);
+		led_level(level);
 
+		random8Digits = get_digits();
+
+		digitsConnect = connectDigits(random8Digits);
+	
+		//2초 동안 1:3으로 깜빡임
+		for (int i = 0; i < 5; i++) {
+			fnd_hexa_number(digitsConnect);
+			usleep(100000);
+			fnd_clear();
+			usleep(300000);
+		}
+
+
+		clcd_InputMsg();
+		digitsInput = keypad_input_digits(&key_value);
+
+		if (digitsInput == digitsConnect) {
+
+			clcd_correct();
+			in_game(8);
+		}
+		else {
+
+			clcd_wrong();
+			break;
+		}
 	case:8
+		clcd_level_display(8);
+		led_level(level);
 
-	default break;
+		random8Digits = get_digits();
 
+		digitsConnect = connectDigits(random8Digits);
+
+		//2초 동안 1:3으로 깜빡임
+		for (int i = 0; i < 5; i++) {
+			fnd_hexa_number(digitsConnect);
+			usleep(100000);
+			fnd_clear();
+			usleep(300000);
+		}
+
+
+		clcd_InputMsg();
+		digitsInput = keypad_input_digits(&key_value);
+
+		if (digitsInput == digitsConnect) {
+
+			clcd_correct();
+			/*
+			(#6)
+			clcd_game_success()
+			게임 성공 clcd 출력
+			*/
+			break;
+		}
+		else {
+
+			clcd_wrong();
+			break;
+		}
+		default break;
+
+	}
 }
-
 
 void blinkAllDevice() {
 
@@ -413,9 +457,72 @@ unsigned long keypad_input_digits(int* key_value) {
 	int col, row, key_count = 0;
 	unsigned long digitsConnect_temp =0;
 	short key_temp =0;
-	
+	int endTime = (unsigned)time(NULL);
+	endTime += 6; // 입력 제한시간 6초(초단위) 
 
+	left_time_display(6);
 	while ( key_count < 9) {	// while 안에 조건 레벨별 추가가능
+		double startTime = (unsigned)time(NULL);
+		double left_time = endTime - startTime;
+		if (left_time < 0) {
+			
+			break;
+			/*
+			(#5)
+			clcd_timeout();
+			입력 시간 초과했다는 clcd display
+			*/
+		}
+		if (left_time <= 5.5 && left_time > 5) { //if, else-if문으로 코드 짤때,
+			clcd_clear_display();
+			left_time_display(5.5);
+		}
+		else if (left_time <= 5 && left_time > 4.5) {
+			clcd_clear_display();
+			left_time_display(5);
+		}
+		else if (left_time <= 4.5 && left_time > 4) {
+			clcd_clear_display();
+			left_time_display(4.5);
+		}
+
+		else if (left_time <= 4 && left_time > 3.5) {
+			clcd_clear_display();
+			left_time_display(4);
+		}
+
+		else if (left_time <= 3.5 && left_time > 3) {
+			clcd_clear_display();
+			left_time_display(3.5);
+		}
+
+		else if (left_time <= 3 && left_time > 2.5) {
+			clcd_clear_display();
+			left_time_display(3);
+		}
+		else if (left_time <= 2.5 && left_time > 2) {
+			clcd_clear_display();
+			left_time_display(2.5);
+		}
+
+		else if (left_time <= 2 && left_time > 1.5) {
+			clcd_clear_display();
+			left_time_display(2);
+		}
+
+		else if (left_time <= 1.5 && left_time > 1) {
+			clcd_clear_display();
+			left_time_display(1.5);
+		}
+		else if (left_time <= 1 && left_time > 0.5) {
+			clcd_clear_display();
+			left_time_display(1);
+		}
+
+		else if (left_time <= 0.5 && left_time > 0) {
+			clcd_clear_display();
+			left_time_display(0.5);
+		}
 
 		for (col = 0; col < MAX_KEY_COL; col++) {
 			*keypad_out = (short)(0x08 >> col);

@@ -31,16 +31,6 @@ typedef enum {
 	SUCCESS	= 0
 } error_t;
 
-typedef union {
-	unsigned char all;
-	struct {
-		unsigned char  led : 1;
-		unsigned char  dot : 1;
-		unsigned char  fnd : 1;
-		unsigned char clcd : 1;
-		unsigned char exit : 1;
-	};
-} seclection_t;
 
 int main();
 short * mapper(off_t offset, int prot);
@@ -51,7 +41,7 @@ truth_t logic();
 
 void input_mode();
 
-void game_set();
+truth_t game_set();
 void game_start();
 void in_game();
 void blinkAllDevice();
