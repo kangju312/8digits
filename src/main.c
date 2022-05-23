@@ -391,11 +391,7 @@ void in_game(int level) {
 		if (digitsInput == digitsConnect) {
 
 			clcd_correct();
-			/*
-			(#6)
-			clcd_game_success()
-			게임 성공 clcd 출력
-			*/
+			clcd_game_success();
 			break;
 		}
 		else {
@@ -465,14 +461,9 @@ unsigned long keypad_input_digits(int* key_value) {
 		double startTime = (unsigned)time(NULL);
 		double left_time = endTime - startTime;
 		if (left_time < 0) {
-			
-			break;
-			/*
-			(#5)
 			clcd_timeout();
-			입력 시간 초과했다는 clcd display
-			*/
-		}
+			break;
+					}
 		if (left_time <= 5.5 && left_time > 5) { //if, else-if문으로 코드 짤때,
 			clcd_clear_display();
 			left_time_display(5.5);

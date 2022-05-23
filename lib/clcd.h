@@ -30,4 +30,6 @@ void clcd_start_msg();
 void clcd_inputMsg();
 void clcd_correct();
 void clcd_wrong();
+void clcd_timeout()
+void clcd_game_success();
 #endif

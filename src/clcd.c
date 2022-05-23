@@ -143,3 +143,21 @@ void left_time_display(double time_buf) {
 	clcd_set_DDRAM(0x00);
 	clcd_write_string("enter the 8digits");
 }
+
+void clcd_timeout() {
+	clcd_clear_display();
+	clcd_set_DDRAM(0x03);
+	clcd_write_string("Timeout!")
+		usleep(5000000);
+	clcd_clear_display();
+}
+
+void clcd_game_success() {
+	clcd_clear_display();
+	clcd_set_DDRAM(0x00);
+	clcd_write_string("Finalstage Clear");
+	clcd_set_DDRAM(0x40);
+	clcd_write_string("Congratulation! ");
+	usleep(5000000);
+	clcd_clear_display();
+}
