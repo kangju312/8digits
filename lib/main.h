@@ -43,12 +43,12 @@ void input_mode();
 
 truth_t game_set();
 void game_start();
-void in_game();
-void blinkAllDevice();
+truth_t in_game();
+void start_allDevice();
 
 int* get_digits();
 unsigned long connectDigits();
-int keypad_input_digits();
+unsigned long keypad_input_digits();
 
 
 

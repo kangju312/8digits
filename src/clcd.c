@@ -1,6 +1,7 @@
 //-------| src/clcd.c |-------//
 #include "clcd.h"
-
+#include <string.h>
+#include <stdio.h>
 
 
 static short * clcd_cmd, * clcd_data;
@@ -84,7 +85,6 @@ void clcd_level_display(int level_buf) {
 
 	clcd_set_DDRAM(0x00);
 	clcd_write_string(clcd_str_buf);
-	usleep(2000000);
 	clcd_clear_display();
 
 	clcd_set_DDRAM(0x40);
@@ -93,6 +93,7 @@ void clcd_level_display(int level_buf) {
 	clcd_clear_display();
 }
 
+/*
 void clcd_start_msg() {
 	for (int i = 0; i < 2; i++) {
 		clcd_set_DDRAM(0x00);
@@ -104,8 +105,9 @@ void clcd_start_msg() {
 		usleep(800000);
 	}
 }
+*/
 
-void clcd_inputMsg() {
+void clcd_InputMsg() {
 	char guide_message1[] = "Enter the shown";
 	char guide_message2[] = "8digits in order";
 	clcd_set_DDRAM(0x00);
@@ -117,15 +119,15 @@ void clcd_inputMsg() {
 
 void clcd_correct() {
 	clcd_set_DDRAM(0x04);
-	clcd_write_string("Correct!")
-		usleep(2000000);
+	clcd_write_string("Correct!");
+	usleep(2000000);
 	clcd_clear_display();
 }
 
 void clcd_wrong() {
 	clcd_set_DDRAM(0x05);
-	clcd_write_string("Wrong!")
-		usleep(2000000);
+	clcd_write_string("Wrong!");
+	usleep(2000000);
 	clcd_clear_display();
 }
 
@@ -147,8 +149,8 @@ void left_time_display(double time_buf) {
 void clcd_timeout() {
 	clcd_clear_display();
 	clcd_set_DDRAM(0x03);
-	clcd_write_string("Timeout!")
-		usleep(5000000);
+	clcd_write_string("Timeout!");
+	usleep(5000000);
 	clcd_clear_display();
 }
 

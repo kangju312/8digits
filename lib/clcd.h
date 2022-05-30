@@ -26,10 +26,10 @@ void clcd_write_string(char str[]);
 
 void left_time_display();
 void clcd_level_display(int level_buf);
-void clcd_start_msg();
-void clcd_inputMsg();
+// void clcd_start_msg();
+void clcd_InputMsg();
 void clcd_correct();
 void clcd_wrong();
-void clcd_timeout()
+void clcd_timeout();
 void clcd_game_success();
 #endif
