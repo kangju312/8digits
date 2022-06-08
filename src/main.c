@@ -90,7 +90,7 @@ void emergency_closer() {
 
 truth_t game_set() {
 
-	int i;  char buf;
+	int i;  char buf[10];
 	char clcd_str[20] = "";
 	
 	//디바이스 초기화
@@ -102,21 +102,37 @@ truth_t game_set() {
 	//게임 시작 터미널 화면
 	printf("\n");
 	printf("************************************\n");
-	printf("*     Welcome to  8digits game	   *\n");
-	printf("*								   *\n");
-	printf("*	 press (s) to start level 1	   *\n");
-	printf("*		press (e) to exit		   *\n");
-	printf("*       						   *\n");
-	printf("************************************\n\n");
+	printf("*                                  *\n");
+	printf("*      *********************       *\n");
+	printf("*     ***********************      *\n");
+	printf("*     ****     *****     ****      *\n");
+	printf("*         ****       ****          *\n");
+	printf("*      *********************       *\n");
+	printf("*     **** 1 *** 2 *** 3 ****      *\n");
+	printf("*    *************************     *\n");
+	printf("*    ***** 4 *** 5 *** 6 *****     *\n");
+	printf("*    *************************     *\n");
+	printf("*    ***** 7 *** 8 *** 9 *****     *\n");
+	printf("*    *************************     *\n");
+	printf("*    ***** * *** 0 *** # *****     *\n");
+	printf("*     ***********************      *\n");
+	printf("*                                  *\n");
+	printf("*   Welcome to number after 010    *\n");
+	printf("*                                  *\n");
+	printf("*  press (s) to start 1st approach *\n");
+	printf("*  press (e) to exit               *\n");
+	printf("*                                  *\n");
+	printf("************************************\n");
 	scanf("%c", buf);
-	
-	if (buf == 's') {
-			while( game_start() == 1 ; }
-	else if (buf == 'e') { return FALSE; }
+
+	for (i = 0; i < strlen(buf); i++) {
+		if (buf[i] == 's') { game_start(); }
+		else if (buf[i] == 'e') { return FALSE; }
+	}
 	return TRUE;
 }
 
-truth_t game_start(){
+void game_start(){
 
 	start_allDevice();
 
@@ -126,7 +142,7 @@ truth_t game_start(){
 }
 
 
-truth_t in_game(int level) {
+void in_game(int level) {
 
 	int displayTime = 0;
 	unsigned long digitsConnect = 0;
@@ -163,8 +179,10 @@ truth_t in_game(int level) {
 		else {
 
 			clcd_wrong();
-
-			return FALSE;
+			led_clear();
+			dot_clear();
+			fnd_clear();
+			emergency_closer();
 		}
 
 	case 2:
@@ -196,7 +214,10 @@ truth_t in_game(int level) {
 		else {
 
 			clcd_wrong();
-			return FALSE;
+			led_clear();
+			dot_clear();
+			fnd_clear();
+			emergency_closer();
 		}
 
 	case 3:
@@ -208,8 +229,8 @@ truth_t in_game(int level) {
 		digitsConnect = connectDigits(random8Digits);
 
 		//3초동안 깜빡임
-		int i;
-		for (i = 0; i < 15; i++) {
+		int i1;
+		for (i1 = 0; i1 < 15; i1++) {
 			fnd_hexa_number(digitsConnect);
 			usleep(100000);
 			fnd_clear();
@@ -228,7 +249,10 @@ truth_t in_game(int level) {
 		else {
 
 			clcd_wrong();
-			return FALSE;
+			led_clear();
+			dot_clear();
+			fnd_clear();
+			emergency_closer();
 		}
 	case 4:
 		clcd_level_display(4);
@@ -254,7 +278,10 @@ truth_t in_game(int level) {
 		else {
 
 			clcd_wrong();
-			return FALSE;
+			led_clear();
+			dot_clear();
+			fnd_clear();
+			emergency_closer();
 		}
 
 	case 5:
@@ -266,8 +293,8 @@ truth_t in_game(int level) {
 		digitsConnect = connectDigits(random8Digits);
 
 		//1.8초동안 깜빡임
-		int i;
-		for (i = 0; i < 9; i++) {
+		int i2;
+		for (i2 = 0; i2 < 9; i2++) {
 			fnd_hexa_number(digitsConnect);
 			usleep(100000);
 			fnd_clear();
@@ -286,7 +313,10 @@ truth_t in_game(int level) {
 		else {
 
 			clcd_wrong();
-			return FALSE;
+			led_clear();
+			dot_clear();
+			fnd_clear();
+			emergency_closer();
 		}
 	case 6:
 		clcd_level_display(4);
@@ -313,7 +343,10 @@ truth_t in_game(int level) {
 		else {
 
 			clcd_wrong();
-			return FALSE;
+			led_clear();
+			dot_clear();
+			fnd_clear();
+			emergency_closer();
 		}
 	case 7:
 		clcd_level_display(7);
@@ -324,8 +357,8 @@ truth_t in_game(int level) {
 		digitsConnect = connectDigits(random8Digits);
 	
 		//2초 동안 1:3으로 깜빡임
-		int i;
-		for (i = 0; i < 5; i++) {
+		int i3;
+		for (i3 = 0; i3 < 5; i3++) {
 			fnd_hexa_number(digitsConnect);
 			usleep(100000);
 			fnd_clear();
@@ -344,7 +377,10 @@ truth_t in_game(int level) {
 		else {
 
 			clcd_wrong();
-			return FALSE;
+			led_clear();
+			dot_clear();
+			fnd_clear();
+			emergency_closer();
 		}
 	case 8:
 		clcd_level_display(8);
@@ -355,8 +391,8 @@ truth_t in_game(int level) {
 		digitsConnect = connectDigits(random8Digits);
 
 		//2초 동안 1:3으로 깜빡임
-		int i;
-		for (i = 0; i < 5; i++) {
+		int i4;
+		for (i4 = 0; i4 < 5; i4++) {
 			fnd_hexa_number(digitsConnect);
 			usleep(100000);
 			fnd_clear();
@@ -376,7 +412,10 @@ truth_t in_game(int level) {
 		else {
 
 			clcd_wrong();
-			return FALSE;
+			led_clear();
+			dot_clear();
+			fnd_clear();
+			emergency_closer();
 		}
 	default: break;
 
@@ -386,14 +425,15 @@ truth_t in_game(int level) {
 void start_allDevice() {
 
 	led_blink_all();
-	for (i = 1; i < 6; i++) {
+	int t1;
+	for (t1 = 1; t1 < 6; t1++) {
 		dot_write(8);
 		fnd_all();
 		led_all();
 		clcd_set_DDRAM(0x00);
-		clcd_write_string("game starting..."); //스토리 수정
+		clcd_write_string(" may I ask your "); //스토리 수정
 		clcd_set_DDRAM(0x40);
-		clcd_write_string("****************"); //스토리 수정
+		clcd_write_string(" phone number.? "); //스토리 수정
 		usleep(200000);
 
 		dot_clear();
@@ -412,9 +452,9 @@ int* get_digits() {
 
 	srand(time(NULL));
 
-	int t;
-	for (t = 0; t < 8; t++) {
-		randomDigits[t] = rand() % 16;
+	int t2;
+	for (t2 = 0; t2 < 8; t2++) {
+		randomDigits[t2] = rand() % 10; //10진수로 변경
 	}
 	return randomDigits;
 }
@@ -424,11 +464,11 @@ unsigned long connectDigits(int* digitsArray) {
 	unsigned long digitsConnect = 0;
 	int* digits = digitsArray;
 
-	int t;
-	for (int t = 0; t< 8; t++) {
+	int t3;
+	for (t3 = 0; t3< 8; t3++) {
 		//[0]이 LSB
-		int temp = (0x0f & digits[t]);
-		temp = temp << 4 * t;
+		int temp = (0x0f & digits[t3]);
+		temp = temp << 4 * t3;
 		digitsConnect |= temp;
 	}
 
@@ -439,94 +479,81 @@ unsigned long connectDigits(int* digitsArray) {
 
 unsigned long keypad_input_digits(int* key_value) {
 
+	int col, row, key_count = 0;
+	unsigned long digitsConnect_temp = 0;
+	short key_temp = 0;
+	char clcd_key_value[] = "";
+	clcd_key_value[0] = '\0';
+	char c1[4] = "****";
+	char c2[4] = "****";
 
-	//int endTime = (unsigned)time(NULL);
-	//endTime += 20;
-	//left_time_display(6);
-	//while ( key_count < 8) {	// while 안에 조건 레벨별 추가가능
-	//	double startTime = (unsigned)time(NULL);
-	//	double left_time = endTime - startTime;
-	//	if (left_time < 0) {
-	//		clcd_timeout();
-	//		break;
-	//				}
-	//	if (left_time <= 5.5 && left_time > 5) { //if, else-if문으로 코드 짤때,
-	//		clcd_clear_display();
-	//		left_time_display(5.5);
-	//	}
-	//	else if (left_time <= 5 && left_time > 4.5) {
-	//		clcd_clear_display();
-	//		left_time_display(5);
-	//	}
-	//	else if (left_time <= 4.5 && left_time > 4) {
-	//		clcd_clear_display();
-	//		left_time_display(4.5);
-	//	}
-
-	//	else if (left_time <= 4 && left_time > 3.5) {
-	//		clcd_clear_display();
-	//		left_time_display(4);
-	//	}
-
-	//	else if (left_time <= 3.5 && left_time > 3) {
-	//		clcd_clear_display();
-	//		left_time_display(3.5);
-	//	}
-
-	//	else if (left_time <= 3 && left_time > 2.5) {
-	//		clcd_clear_display();
-	//		left_time_display(3);
-	//	}
-	//	else if (left_time <= 2.5 && left_time > 2) {
-	//		clcd_clear_display();
-	//		left_time_display(2.5);
-	//	}
-
-	//	else if (left_time <= 2 && left_time > 1.5) {
-	//		clcd_clear_display();
-	//		left_time_display(2);
-	//	}
-
-	//	else if (left_time <= 1.5 && left_time > 1) {
-	//		clcd_clear_display();
-	//		left_time_display(1.5);
-	//	}
-	//	else if (left_time <= 1 && left_time > 0.5) {
-	//		clcd_clear_display();
-	//		left_time_display(1);
-	//	}
-
-	//	else if (left_time <= 0.5 && left_time > 0) {
-	//		clcd_clear_display();
-	//		left_time_display(0.5);
-	//	}
-
-		int col, row, key_count = 0;
-		unsigned long digitsConnect_temp = 0;
-		short key_temp = 0;
-		for (col = 0; col < MAX_KEY_COL; col++) {
+	while (key_count < 8) {	
+	// while 안에 조건 레벨별 추가가능
+	
+		for (col = 0; col < MAX_KEY_COL -1; col++) {
 			*keypad_out = (short)(0x08 >> col);
 			key_temp = *keypad_in;
 
 			for (row = 0; row < MAX_KEY_ROW; row++) {
 				if (((key_temp >> row) & 1) == 1) {
-					*key_value = (row * 4) + col;
+					if (row == 0) {
+						*key_value = col +1 ;
+					}
+					else if(row == 1) {
+						*key_value = col +4;
+					}
+					else if (row == 2) {
+						*key_value = col + 7;
+					}
+					else {
+						*key_value = 0;
+					}
+						
+					//*key_value = (row * 4) + col;
+
+					if (key_count < 4) {
+						c1[key_count] = *key_value;
+					}
+					else {
+						c2[key_count - 4] = *key_value;
+					}
+
 					key_count++;
 
 					int temp = (0x0f & *key_value);
-					temp = temp << 4 * (8 - key_count);
+					temp = temp << 4 * (key_count-1);
 					digitsConnect_temp |= temp;
 
 					dot_write(*key_value);
-					
-					int start = clock();
-					while ((clock() - start) < 1000) {
-						dot_clear();
-					}
+
+					strcat(clcd_key_value, "010-");
+					strcat(clcd_key_value, c1);
+					strcat(clcd_key_value, "-");
+					strcat(clcd_key_value, c2);
+
+					usleep(500000);
+					clcd_set_DDRAM(0x00);
+					clcd_write_string("Next Number?");
+					clcd_set_DDRAM(0x40);
+					clcd_write_string(clcd_key_value);
+
+					dot_clear();
+					clcd_clear_display();
+
 				}
 
 			}
 		}
-
+	}
+	int i;
+	for (i = 0; i < 2; i++) {
+		clcd_set_DDRAM(0x00);
+		clcd_write_string("  calling to...");
+		clcd_set_DDRAM(0x40);
+		clcd_write_string(clcd_key_value);
+		usleep(800000);
+		clcd_clear_display();
+		usleep(800000);
+	}
 	return digitsConnect_temp;
 }

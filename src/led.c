@@ -51,7 +51,8 @@ void led_level(int level) {
 
 	short ledOn = 0xff;
 
-	for (int i = 0; i < level; i++){
+	int t4;
+	for (t4 = 0; t4 < level; t4++){
 		ledOn = ledOn << 1;
 	}
 	ledOn = (0xff & ledOn);

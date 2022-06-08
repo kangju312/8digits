@@ -74,77 +74,91 @@ void clcd_write_string(char str[]) {
 void clcd_level_display(int level_buf) {
 
 	char s1[10];
+	char ment[10] = "";
 	char clcd_str_buf[60] = "";
 
 	sprintf(s1, "%d", level_buf);
 
 	clcd_str_buf[0] = '\0';
-	strcat(clcd_str_buf, "level ");
-	strcat(clcd_str_buf, s1);
-	strcat(clcd_str_buf, " start! ");
+	ment[0] = \0;
 
-	clcd_set_DDRAM(0x00);
+	if (level_buf == 1) {
+		strcpy(ment, "st ");
+	}
+
+	else if (level_buf == 2) {
+		strcpy(ment, "nd ");
+	}
+
+	else if (level_buf == 3) {
+		strcpy(ment, "rd ");
+	}
+
+	else {
+		strcpy(ment, "th ");
+	}
+	strcat(clcd_str_buf, s1);
+	strcat(clcd_str_buf, ment);
+	strcat(clcd_str_buf, "approach!");
+
+	clcd_set_DDRAM(0x02);
 	clcd_write_string(clcd_str_buf);
-	clcd_clear_display();
 
 	clcd_set_DDRAM(0x40);
-	clcd_write_string("VVVVVVVVVVVVVVVV");
+	clcd_write_string("My number is...");
 	usleep(2000000);
 	clcd_clear_display();
 }
 
-/*
-void clcd_start_msg() {
-	for (int i = 0; i < 2; i++) {
-		clcd_set_DDRAM(0x00);
-		clcd_write_string("game starting...");
-		clcd_set_DDRAM(0x40);
-		clcd_write_string("****************");
-		usleep(800000);
-		clcd_clear_display();
-		usleep(800000);
-	}
-}
-*/
-
 void clcd_InputMsg() {
-	char guide_message1[] = "Enter the shown";
-	char guide_message2[] = "8digits in order";
+	char guide_message1[] = "Dial the 8digits";
+	char guide_message2[] = "you want to call";
 	clcd_set_DDRAM(0x00);
 	clcd_write_string(guide_message1);
 	clcd_set_DDRAM(0x40);
 	clcd_write_string(guide_message2);
-	usleep(2000000);
+	usleep(1000000);
+	clcd_clear_display();
 }
 
 void clcd_correct() {
 	clcd_set_DDRAM(0x04);
-	clcd_write_string("Correct!");
+	clcd_write_string("Ring Ring~");
 	usleep(2000000);
 	clcd_clear_display();
 }
 
 void clcd_wrong() {
-	clcd_set_DDRAM(0x05);
-	clcd_write_string("Wrong!");
+	clcd_set_DDRAM(0x00);
+	clcd_write_string(" you dialed an");
+	clcd_set_DDRAM(0x40);
+	clcd_write_string("incorrect number");
 	usleep(2000000);
 	clcd_clear_display();
-}
 
-
-
-void left_time_display(double time_buf) {
-	char s2[10] = "";
-	char clcd_str_buf2[60] = "";
-	clcd_str_buf2[0] = '\0';
-	sprintf(s2, "%.2f", time_buf);
-	strcat(clcd_str_buf2, "Lefttime : ");
-	strcat(clcd_str_buf2, s2);
-	clcd_set_DDRAM(0x40);
-	clcd_write_string(clcd_str_buf2);
 	clcd_set_DDRAM(0x00);
-	clcd_write_string("enter the 8digits");
+	clcd_write_string("  wish you luck ");
+	clcd_set_DDRAM(0x40);
+	clcd_write_string(" next time :(");
+	usleep(2000000);
+	clcd_clear_display();
+
 }
+
+
+//
+//void left_time_display(double time_buf) {
+//	char s2[10] = "";
+//	char clcd_str_buf2[60] = "";
+//	clcd_str_buf2[0] = '\0';
+//	sprintf(s2, "%.2f", time_buf);
+//	strcat(clcd_str_buf2, "Lefttime : ");
+//	strcat(clcd_str_buf2, s2);
+//	clcd_set_DDRAM(0x40);
+//	clcd_write_string(clcd_str_buf2);
+//	clcd_set_DDRAM(0x00);
+//	clcd_write_string("enter the 8digits");
+//}
 
 void clcd_timeout() {
 	clcd_clear_display();

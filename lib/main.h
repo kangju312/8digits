@@ -43,7 +43,7 @@ void input_mode();
 
 truth_t game_set();
 void game_start();
-truth_t in_game();
+void in_game();
 void start_allDevice();
 
 int* get_digits();
