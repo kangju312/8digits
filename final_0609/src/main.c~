@@ -1,6 +1,6 @@
 //-------| src/main.c |-------//
 #include "main.h"
-//int i for 문 밖으로 빼기
+
 
 static off_t IEB_DOT[MAX_DOT] = {
 	IEB_DOT1,
@@ -23,7 +23,8 @@ static off_t IEB_FND[MAX_FND] = {
 static int fd;
 static int map_counter = 0;
 static void * map_data[100];
-short* keypad_out, * keypad_in;
+static short * keypad_out, * keypad_in;
+
 
 int main(int argc, char* argv[]) {
 	
@@ -107,15 +108,15 @@ truth_t game_set() {
 	printf("*     ***********************      *\n");
 	printf("*     ****     *****     ****      *\n");
 	printf("*         ****       ****          *\n");
-	printf("*      *********************       *\n");
-	printf("*     **** 1 *** 2 *** 3 ****      *\n");
-	printf("*    *************************     *\n");
-	printf("*    ***** 4 *** 5 *** 6 *****     *\n");
-	printf("*    *************************     *\n");
-	printf("*    ***** 7 *** 8 *** 9 *****     *\n");
-	printf("*    *************************     *\n");
-	printf("*    ***** * *** 0 *** # *****     *\n");
-	printf("*     ***********************      *\n");
+	printf("*      **********************      *\n");
+	printf("*     *** 1 ** 2 ** 3 ** x ***     *\n");
+	printf("*    **************************    *\n");
+	printf("*    **** 4 ** 5 ** 6 ** x ****    *\n");
+	printf("*    **************************    *\n");
+	printf("*    **** 7 ** 8 ** 9 ** x ****    *\n");
+	printf("*    **************************    *\n");
+	printf("*    **** x ** 0 ** x ** x ****    *\n");
+	printf("*     ************************     *\n");
 	printf("*                                  *\n");
 	printf("*   Welcome to number after 010    *\n");
 	printf("*                                  *\n");
@@ -123,8 +124,8 @@ truth_t game_set() {
 	printf("*  press (e) to exit               *\n");
 	printf("*                                  *\n");
 	printf("************************************\n");
-	scanf("%c", buf);
-
+	scanf("%s", buf);
+	
 	for (i = 0; i < strlen(buf); i++) {
 		if (buf[i] == 's') { game_start(); }
 		else if (buf[i] == 'e') { return FALSE; }
@@ -141,18 +142,24 @@ void game_start(){
 }
 
 
-void in_game(int level) {
+truth_t in_game(int level) {
 
 	int displayTime = 0;
 	unsigned long digitsConnect = 0;
 	unsigned long digitsInput = 0;
 	int* random8Digits;
 	int* key_value;
-	
+
 	switch (level) {
 	case 1:
 
 		clcd_level_display(1);
+		/*
+		****************(#2)****************
+		clcd_level_display(1);
+		clcd에 level 1 시작된다고
+		fnd에 출력되는 8자리를 암기하라고 출력
+		*/
 
 		led_level(level);
 
@@ -163,12 +170,19 @@ void in_game(int level) {
 		fnd_hexa_number(digitsConnect);
 
 		//5초 동안 보여줌
-		displayTime = 5000000; 
+		displayTime = 5000000; //level 1에선 3초동안 숫자 켜짐
 		usleep(displayTime);
 		fnd_clear();
 
 		clcd_InputMsg();
-		
+		/*
+		****************(#3)****************
+		clcd_InputMsg(){
+
+			clcd에 keypad에 8 자리 입력하라고 출력
+			//
+		}
+		*/
 		digitsInput = keypad_input_digits(&key_value);
 		if (digitsInput == digitsConnect) {
 
@@ -228,7 +242,7 @@ void in_game(int level) {
 		digitsConnect = connectDigits(random8Digits);
 
 		//3초동안 깜빡임
-		int i1;
+                int i1;
 		for (i1 = 0; i1 < 15; i1++) {
 			fnd_hexa_number(digitsConnect);
 			usleep(100000);
@@ -260,6 +274,8 @@ void in_game(int level) {
 		random8Digits = get_digits();
 
 		digitsConnect = connectDigits(random8Digits);
+
+		fnd_hexa_number(digitsConnect);
 
 		//2초 동안 보여줌
 		displayTime = 2000000;
@@ -318,12 +334,13 @@ void in_game(int level) {
 			emergency_closer();
 		}
 	case 6:
-		clcd_level_display(4);
+		clcd_level_display(6);
 		led_level(level);
 
 		random8Digits = get_digits();
 
 		digitsConnect = connectDigits(random8Digits);
+		fnd_hexa_number(digitsConnect);
 
 		//1.3초 동안 보여줌
 		displayTime = 1300000;
@@ -410,7 +427,6 @@ void in_game(int level) {
 			dot_clear();
 			fnd_clear();
 			emergency_closer();
-
 		}
 		else {
 
@@ -454,10 +470,10 @@ int* get_digits() {
 	static int randomDigits[8];
 
 	srand(time(NULL));
+	int i;
 
-	int t2;
-	for (t2 = 0; t2 < 8; t2++) {
-		randomDigits[t2] = rand() % 10; //10진수로 변경
+	for (i = 0; i < 8; i++) {
+		randomDigits[i] = rand() % 10;
 	}
 	return randomDigits;
 }
@@ -465,13 +481,12 @@ int* get_digits() {
 unsigned long connectDigits(int* digitsArray) {
 	
 	unsigned long digitsConnect = 0;
-	int* digits = digitsArray;
+	int *digits=digitsArray;
+	int i;
+	for (i = 0; i < 8; i++) {
 
-	int t3;
-	for (t3 = 0; t3< 8; t3++) {
-		//[0]이 LSB
-		int temp = (0x0f & digits[t3]);
-		temp = temp << 4 * t3;
+		int temp = (0x0f & digits[i]);
+		temp = temp << 4 * i;
 		digitsConnect |= temp;
 	}
 
@@ -483,24 +498,29 @@ unsigned long connectDigits(int* digitsArray) {
 unsigned long keypad_input_digits(int* key_value) {
 
 	int col, row, key_count = 0;
-	unsigned long digitsConnect_temp = 0;
-	short key_temp = 0;
-	/*
-	char clcd_key_value[30] = "";
-
-	char c1[4] = "****";
-	char c2[4] = "****";
-	*/
-
-	while (key_count < 8) {	
-	// while 안에 조건 레벨별 추가가능
+	unsigned long digitsConnect_temp =0;
+	short key_temp =0;
 	
-		for (col = 0; col < MAX_KEY_COL -1; col++) {
+	char s1[10]="";
+	//char s2[10]="";
+	char cur_key_value[30];
+	char c1[10];
+	//char c1[9] = "";
+	//c1[4] = '-';
+	//c1[0] = '\0';
+
+
+
+	while ( key_count < 8) {	// while 안에 조건 레벨별 추가가능
+	
+			
+		for (col = 0; col < MAX_KEY_COL-1; col++) {
 			*keypad_out = (short)(0x08 >> col);
 			key_temp = *keypad_in;
 
 			for (row = 0; row < MAX_KEY_ROW; row++) {
 				if (((key_temp >> row) & 1) == 1) {
+					//*key_value = (row * 4) + col;
 					if (row == 0) {
 						*key_value = col +1 ;
 					}
@@ -510,49 +530,71 @@ unsigned long keypad_input_digits(int* key_value) {
 					else if (row == 2) {
 						*key_value = col + 7;
 					}
-					else if (row==3){
+					else if(row == 3)  {
 						*key_value = 0;
 					}
-						
-					//*key_value = (row * 4) + col;
-					/*
-					if (key_count < 4) {
-						c1[key_count] = *key_value;
+					/*else{
+						*key_value=0;
+					}*/
+
+					/*if (key_count < 4) {	
+						c1[key_count] = (*key_value)+48;
 					}
 					else {
-						c2[key_count - 4] = *key_value;
-					}
-					*/
+						c2[key_count - 4] = (*key_value)+48;
+					}*/
 					key_count++;
-
+					
 					int temp = (0x0f & *key_value);
 					temp = temp << 4 * (key_count-1);
 					digitsConnect_temp |= temp;
-
+					
 					dot_write(*key_value);
 
+
+
+
+					/*if(key_count <4){
+						c1[key_count] = (*key_value) + 48;
+					}
+					else{
+						
+						c1[key_count + 1] =  (*key_value) + 48;
+					}*/
+					//cur_key_value[0]='\0';
+
+					/*sprintf(s1, "%d", *key_value);
+					strcat(cur_key_value, "010-");
+					strcat(cur_key_value, s1);
+					printf("%c\n", cur_key_value);
+ 					s1[0]='\0';*/
+
+
+
+					clcd_clear_display();
 					usleep(500000);
 					clcd_set_DDRAM(0x00);
 					clcd_write_string("Next Number?");
-					clcd_set_DDRAM(0x40);
-					//clcd_write_string(clcd_key_value);
-
+				
 					dot_clear();
-
 				}
 
 			}
+		
 		}
-	}
-	int i;
-	for (i = 0; i < 2; i++) {
-		clcd_set_DDRAM(0x00);
-		clcd_write_string("  calling to...");
-		clcd_set_DDRAM(0x40);
-		//clcd_write_string(clcd_key_value);
-		usleep(800000);
-		clcd_clear_display();
-		usleep(800000);
-	}
+
+	}	
+
+
 	return digitsConnect_temp;
 }
+
+void init_keypad(short * address_out, short * address_in) {
+	keypad_out  = address_out;
+	keypad_in = address_in;
+}
+
+
+
+
+

@@ -1,7 +1,6 @@
 //-------| src/clcd.c |-------//
 #include "clcd.h"
-#include <string.h>
-#include <stdio.h>
+
 
 
 static short * clcd_cmd, * clcd_data;
@@ -81,34 +80,46 @@ void clcd_level_display(int level_buf) {
 
 	clcd_str_buf[0] = '\0';
 	ment[0] = '\0';
-
-	if (level_buf == 1) {
+	if(level_buf == 1){
 		strcpy(ment, "st ");
 	}
 
-	else if (level_buf == 2) {
+	else if(level_buf == 2){
 		strcpy(ment, "nd ");
 	}
 
-	else if (level_buf == 3) {
+	else if(level_buf == 3){
 		strcpy(ment, "rd ");
 	}
 
-	else {
+	else{
 		strcpy(ment, "th ");
 	}
 	strcat(clcd_str_buf, s1);
 	strcat(clcd_str_buf, ment);
-	strcat(clcd_str_buf, "approach!");
+	strcat(clcd_str_buf, "approach");
 
 	clcd_set_DDRAM(0x02);
 	clcd_write_string(clcd_str_buf);
 
 	clcd_set_DDRAM(0x40);
-	clcd_write_string("My number is...");
+	clcd_write_string("My number? 010..");
 	usleep(2000000);
 	clcd_clear_display();
 }
+
+/*void clcd_start_msg() {
+	int i;
+	for (i = 0; i < 2; i++) {
+		clcd_set_DDRAM(0x00);
+		clcd_write_string("game starting...");
+		clcd_set_DDRAM(0x40);
+		clcd_write_string("****************");
+		usleep(800000);
+		clcd_clear_display();
+		usleep(800000);
+	}
+}*/
 
 void clcd_InputMsg() {
 	char guide_message1[] = "Dial the 8digits";
@@ -117,12 +128,13 @@ void clcd_InputMsg() {
 	clcd_write_string(guide_message1);
 	clcd_set_DDRAM(0x40);
 	clcd_write_string(guide_message2);
-	usleep(5000000);
+	usleep(2000000);
 	clcd_clear_display();
 }
 
 void clcd_correct() {
-	clcd_set_DDRAM(0x04);
+	clcd_clear_display();
+	clcd_set_DDRAM(0x03);
 	clcd_write_string("Ring Ring~");
 	usleep(2000000);
 	clcd_clear_display();
@@ -146,27 +158,14 @@ void clcd_wrong() {
 }
 
 
-//
-//void left_time_display(double time_buf) {
-//	char s2[10] = "";
-//	char clcd_str_buf2[60] = "";
-//	clcd_str_buf2[0] = '\0';
-//	sprintf(s2, "%.2f", time_buf);
-//	strcat(clcd_str_buf2, "Lefttime : ");
-//	strcat(clcd_str_buf2, s2);
-//	clcd_set_DDRAM(0x40);
-//	clcd_write_string(clcd_str_buf2);
-//	clcd_set_DDRAM(0x00);
-//	clcd_write_string("enter the 8digits");
-//}
 
-void clcd_timeout() {
+/*void clcd_timeout() {
 	clcd_clear_display();
 	clcd_set_DDRAM(0x03);
 	clcd_write_string("Timeout!");
 	usleep(5000000);
 	clcd_clear_display();
-}
+}*/
 
 void clcd_game_success() {
 	clcd_clear_display();
@@ -177,3 +176,5 @@ void clcd_game_success() {
 	usleep(5000000);
 	clcd_clear_display();
 }
+
+
